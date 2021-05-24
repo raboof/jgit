@@ -225,6 +225,7 @@ class TransportLocal extends Transport implements PackTransport {
 			// Remove the same variables CGit does.
 			Map<String, String> env = proc.environment();
 			env.remove("GIT_ALTERNATE_OBJECT_DIRECTORIES"); //$NON-NLS-1$
+			env.remove("GIT_COMMON_DIR"); //$NON-NLS-1$
 			env.remove("GIT_CONFIG"); //$NON-NLS-1$
 			env.remove("GIT_CONFIG_PARAMETERS"); //$NON-NLS-1$
 			env.remove("GIT_DIR"); //$NON-NLS-1$

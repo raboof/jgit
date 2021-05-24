@@ -343,6 +343,19 @@ public final class Constants {
 	public static final String GIT_DIR_KEY = "GIT_DIR";
 
 	/**
+	 * The environment variable that tells us which directory is the common
+	 * ".git" directory.
+	 *
+	 * If this variable is set to a path, non-worktree files that are normally
+	 * in $GIT_DIR will be taken from this path instead. Worktree-specific files
+	 * such as HEAD or index are taken from $GIT_DIR. It's related to
+	 * git-worktree.
+	 *
+	 * @since 5.12
+	 */
+	public static final String GIT_COMMON_DIR_KEY = "GIT_COMMON_DIR";
+
+	/**
 	 * The environment variable that tells us which directory is the working
 	 * directory.
 	 */

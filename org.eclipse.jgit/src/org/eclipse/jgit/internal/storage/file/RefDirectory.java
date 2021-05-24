@@ -122,6 +122,8 @@ public class RefDirectory extends RefDatabase {
 
 	private final File gitDir;
 
+	private final File gitCommonDir;
+
 	final File refsDir;
 
 	final File packedRefsFile;
@@ -181,10 +183,11 @@ public class RefDirectory extends RefDatabase {
 		final FS fs = db.getFS();
 		parent = db;
 		gitDir = db.getDirectory();
-		refsDir = fs.resolve(gitDir, R_REFS);
-		logsDir = fs.resolve(gitDir, LOGS);
-		logsRefsDir = fs.resolve(gitDir, LOGS + '/' + R_REFS);
-		packedRefsFile = fs.resolve(gitDir, PACKED_REFS);
+		gitCommonDir = db.getCommonDirectory();
+		refsDir = fs.resolve(gitCommonDir, R_REFS);
+		logsDir = fs.resolve(gitCommonDir, LOGS);
+		logsRefsDir = fs.resolve(gitCommonDir, LOGS + '/' + R_REFS);
+		packedRefsFile = fs.resolve(gitCommonDir, PACKED_REFS);
 
 		looseRefs.set(RefList.<LooseRef> emptyList());
 		packedRefs.set(NO_PACKED_REFS);

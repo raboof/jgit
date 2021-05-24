@@ -444,9 +444,18 @@ public class RepositoryCache {
 		 *         Git directory.
 		 */
 		public static boolean isGitRepository(File dir, FS fs) {
-			return fs.resolve(dir, Constants.OBJECTS).exists()
-					&& fs.resolve(dir, "refs").exists() //$NON-NLS-1$
-					&& (fs.resolve(dir, Constants.REFTABLE).exists()
+			File commonDir;
+			try {
+				commonDir = BaseRepositoryBuilder.getCommonDir(dir);
+			} catch (IOException e) {
+				commonDir = null;
+			}
+			if (commonDir == null) {
+				commonDir = dir;
+			}
+			return fs.resolve(commonDir, Constants.OBJECTS).exists()
+					&& fs.resolve(commonDir, "refs").exists() //$NON-NLS-1$
+					&& (fs.resolve(commonDir, Constants.REFTABLE).exists()
 							|| isValidHead(new File(dir, Constants.HEAD)));
 		}
 
@@ -492,8 +501,20 @@ public class RepositoryCache {
 		public static File resolve(File directory, FS fs) {
 			if (isGitRepository(directory, fs))
 				return directory;
-			if (isGitRepository(new File(directory, Constants.DOT_GIT), fs))
-				return new File(directory, Constants.DOT_GIT);
+
+			final File dotGit = new File(directory, Constants.DOT_GIT);
+			if (dotGit.isFile()) {
+				try {
+					File refDir = BaseRepositoryBuilder.getSymRef(directory, dotGit, fs);
+					if (refDir != null && isGitRepository(refDir, fs)) {
+						return refDir;
+					}
+				} catch (IOException e) {
+					// Continue searching
+				}
+			} else if (isGitRepository(dotGit, fs)) {
+				return dotGit;
+			}
 
 			final String name = directory.getName();
 			final File parent = directory.getParentFile();
